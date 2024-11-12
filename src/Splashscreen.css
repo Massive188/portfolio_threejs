@@ -1,0 +1,21 @@
+/* src/SplashScreen.css */
+.splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #000000; /* You can adjust this to fit your website theme */
+  color: #ffffff;
+  z-index: 1000; /* Make sure it's on top of other components */
+  opacity: 1;
+  transition: opacity 1s ease-out;
+}
+
+.splash-screen.fade-out {
+  opacity: 0;
+  pointer-events: none; /* Allows interaction with underlying content */
+}
