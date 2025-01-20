@@ -1,19 +1,10 @@
-import { useState } from 'react';
-import Globe from 'react-globe.gl';
+import React from 'react';
+
 
 import Button from '../components/Button.jsx';
 
 const About = () => {
-  const [hasCopied, setHasCopied] = useState(false);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText('allendiax603@gmail.com');
-    setHasCopied(true);
-
-    setTimeout(() => {
-      setHasCopied(false);
-    }, 2000);
-  };
 
   return (
     <section className="c-space my-20" id="about">
