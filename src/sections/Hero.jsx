@@ -42,63 +42,33 @@ const Hero = () => {
           // Wait 2 seconds before erasing
           setTimeout(() => eraseTitle(title), 2000);
         }
-      }, 50); // Type speed
+      }, 100); // Typing speed
     };
 
-    // Start the animation with the first title
+    // Start the typing effect with the first title
     typeTitle(profile.titles[currentTitleIndexRef.current]);
 
+    // Cleanup intervals on component unmount
     return () => {
       clearInterval(eraseInterval);
       clearInterval(typeInterval);
     };
-  }, []); // Empty dependency array ensures effect runs once on mount
+  }, []);
 
   return (
-    <section>
-      <header className="relative w-full h-screen overflow-hidden">
-        <div className="p-5 vh-100 text-center bg-image">
-          <div className="d-flex justify-content-center align-items-center h-100 w-100">
-            <div className="text-white">
-              <img
-                className="rounded-circle border-5 mx-auto mb-5 w-50"
-                src={profile.imageUrl}
-                alt="avatar"
-                loading="lazy"
-                decoding="async"
-              />
-              <h1 className="mb-3">
-                <strong>
-                  {profile.firstname} {profile.lastname}
-                </strong>
-              </h1>
-
-              <h4 className="mb-4">{displayedTitle}</h4>
-
-              <div className="d-flex justify-content-center gap-4">
-                <a
-                  href="https://www.linkedin.com/in/your-profile"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-white hover:text-primary transition-colors"
-                >
-                  <SiLinkedin size={30} />
-                </a>
-                |
-                <a
-                  href="https://github.com/your-username"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-white hover:text-primary transition-colors"
-                >
-                  <SiGithub size={30} />
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-    </section>
+    <div className="hero">
+      <img src={profile.imageUrl} alt={`${profile.firstname} ${profile.lastname}`} />
+      <h1>{profile.firstname} {profile.lastname}</h1>
+      <h2>{displayedTitle}</h2>
+      <div className="social-icons">
+        <a href="https://www.linkedin.com/in/allendryroque" target="_blank" rel="noopener noreferrer">
+          <SiLinkedin />
+        </a>
+        <a href="https://github.com/allendryroque" target="_blank" rel="noopener noreferrer">
+          <SiGithub />
+        </a>
+      </div>
+    </div>
   );
 };
 
