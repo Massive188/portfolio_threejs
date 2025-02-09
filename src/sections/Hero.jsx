@@ -1,66 +1,103 @@
-import { Leva } from 'leva';
-import { Suspense } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { useMediaQuery } from 'react-responsive';
-import { PerspectiveCamera } from '@react-three/drei';
+import React, { useState, useEffect, useRef } from "react";
+import { SiLinkedin, SiGithub } from "react-icons/si";
 
-import Cube from '../components/Cube.jsx';
-import Rings from '../components/Rings.jsx';
-import ReactLogo from '../components/ReactLogo.jsx';
-import Button from '../components/Button.jsx';
-import Target from '../components/Target.jsx';
-import CanvasLoader from '../components/Loading.jsx';
-import HeroCamera from '../components/HeroCamera.jsx';
-import { calculateSizes } from '../constants/index.js';
-import { Arcade } from '../components/pacman.jsx';
+const profile = {
+  imageUrl: "./coolpink.jpeg", // Replace with your image URL
+  firstname: "Allendry",
+  lastname: "Roque",
+  titles: ["Software Developer", "Web Designer", "Problem Solver", "Creative Thinker"],
+};
 
 const Hero = () => {
-  // Use media queries to determine screen size
-  const isSmall = useMediaQuery({ maxWidth: 440 });
-  const isMobile = useMediaQuery({ maxWidth: 768 });
-  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1024 });
+  const [displayedTitle, setDisplayedTitle] = useState("");
+  const currentTitleIndexRef = useRef(0);
 
-  const sizes = calculateSizes(isSmall, isMobile, isTablet);
+  useEffect(() => {
+    let eraseInterval;
+    let typeInterval;
+
+    const eraseTitle = (title) => {
+      let i = title.length;
+      eraseInterval = setInterval(() => {
+        if (i >= 0) {
+          setDisplayedTitle(title.substring(0, i));
+          i--;
+        } else {
+          clearInterval(eraseInterval);
+          // Move to next title and type it
+          currentTitleIndexRef.current = (currentTitleIndexRef.current + 1) % profile.titles.length;
+          const nextTitle = profile.titles[currentTitleIndexRef.current];
+          typeTitle(nextTitle);
+        }
+      }, 50); // Erase speed
+    };
+
+    const typeTitle = (title) => {
+      let i = 0;
+      typeInterval = setInterval(() => {
+        setDisplayedTitle(title.substring(0, i + 1));
+        i++;
+        if (i > title.length) {
+          clearInterval(typeInterval);
+          // Wait 2 seconds before erasing
+          setTimeout(() => eraseTitle(title), 2000);
+        }
+      }, 50); // Type speed
+    };
+
+    // Start the animation with the first title
+    typeTitle(profile.titles[currentTitleIndexRef.current]);
+
+    return () => {
+      clearInterval(eraseInterval);
+      clearInterval(typeInterval);
+    };
+  }, []); // Empty dependency array ensures effect runs once on mount
 
   return (
-    <section className="min-h-screen w-full flex flex-col relative" id="home">
-      <div className="w-full mx-auto flex flex-col sm:mt-36 mt-20 c-space gap-3">
-        <p className="sm:text-3xl text-xl font-medium text-white text-center font-generalsans">
-         {/* Hi, I am Allen <span className="waving-hand"></span>*/}
-        </p>
-        <p className="hero_tag text-gray_gradient">Building Website & Application</p>
-      </div>
+    <section>
+      <header className="relative w-full h-screen overflow-hidden">
+        <div className="p-5 vh-100 text-center bg-image">
+          <div className="d-flex justify-content-center align-items-center h-100 w-100">
+            <div className="text-white">
+              <img
+                className="rounded-circle border-5 mx-auto mb-5 w-50"
+                src={profile.imageUrl}
+                alt="avatar"
+                loading="lazy"
+                decoding="async"
+              />
+              <h1 className="mb-3">
+                <strong>
+                  {profile.firstname} {profile.lastname}
+                </strong>
+              </h1>
 
-      <div className="w-full h-full absolute inset-0">
-        <Canvas className="w-full h-full">
-          <Suspense fallback={<CanvasLoader />}>
-            {/* To hide controller */}
-            <Leva hidden />
-            <PerspectiveCamera makeDefault position={[0, 0, 30]} />
+              <h4 className="mb-4">{displayedTitle}</h4>
 
-            <HeroCamera isMobile={isMobile}>
-              <Arcade scale={sizes.deskScale} position={sizes.deskPosition} rotation={[0.1, -Math.PI, 0]} />
-            </HeroCamera>
-
-            
-            {/*<group>
-              <Target position={sizes.targetPosition} />
-              <ReactLogo position={sizes.reactLogoPosition} />
-              <Rings position={sizes.ringPosition} />
-              <Cube position={sizes.cubePosition} />
-            </group>*/}
-            
-            <ambientLight intensity={1} />
-            <directionalLight position={[10, 10, 10]} intensity={0.5} />
-          </Suspense>
-        </Canvas>
-      </div>
-
-      <div className="absolute bottom-7 left-0 right-0 w-full z-10 c-space">
-        <a href="#about" className="w-fit">
-          {/*<Button name="CLICK ME" isBeam containerClass="sm:w-fit w-full sm:min-w-96" />*/}
-        </a>
-      </div>
+              <div className="d-flex justify-content-center gap-4">
+                <a
+                  href="https://www.linkedin.com/in/your-profile"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white hover:text-primary transition-colors"
+                >
+                  <SiLinkedin size={30} />
+                </a>
+                |
+                <a
+                  href="https://github.com/your-username"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white hover:text-primary transition-colors"
+                >
+                  <SiGithub size={30} />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
     </section>
   );
 };
